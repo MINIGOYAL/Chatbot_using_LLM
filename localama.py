@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
 #langsmith tracking
 os.environ["LANGCHAIN_TRACING_V2"]="true"
 os.environ["LANGCHAIN_API_KEY"]=os.getenv("LANGCHAIN_API_KEY")
@@ -36,4 +35,3 @@ chain=prompt|llm|output_parser
 
 if input_text:
     st.write(chain.invoke({'question':input_text}))
-
