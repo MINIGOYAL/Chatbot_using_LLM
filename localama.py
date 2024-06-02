@@ -7,31 +7,36 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
 load_dotenv()
 
-#langsmith tracking
-os.environ["LANGCHAIN_TRACING_V2"]="true"
-os.environ["LANGCHAIN_API_KEY"]=os.getenv("LANGCHAIN_API_KEY")
+# Langsmith tracking
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
-## prompt template
+# Ensure the API key is set
+api_key = os.getenv("LANGCHAIN_API_KEY")
+if api_key is not None:
+    os.environ["LANGCHAIN_API_KEY"] = api_key
+else:
+    raise ValueError("LANGCHAIN_API_KEY environment variable is not set.")
 
-prompt=ChatPromptTemplate.from_messages(
+# Prompt template
+prompt = ChatPromptTemplate.from_messages(
     [
-        ("system","You are a helpful assistant.Please response to the user queries")
-        ("user","Question:{question}")
+        ("system", "You are a helpful assistant. Please respond to the user queries"),
+        ("user", "Question:{question}")
     ]
-
 )
 
-## streamlit framework
-
+# Streamlit framework
 st.title('Langchain Demo with LLAMA2')
-input_text=st.text_input("Search the topic u want")
+input_text = st.text_input("Search the topic you want")
 
-#openAI LLM
-llm=Ollama(model="llama2")
-output_parser=StrOutputParser()
-chain=prompt|llm|output_parser
+# OpenAI LLM
+llm = Ollama(model="llama2")
+output_parser = StrOutputParser()
+chain = prompt | llm | output_parser
 
 if input_text:
-    st.write(chain.invoke({'question':input_text}))
+    st.write(chain.invoke({'question': input_text}))
+
